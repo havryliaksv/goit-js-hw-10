@@ -1,10 +1,8 @@
 import getRefs from './get-refs';
 import SlimSelect from 'slim-select';
-import { fetchBreeds } from './cat-api';
+import { URL, fetchBreeds } from './cat-api';
 
 import 'slim-select/dist/slimselect.css';
-
-const URL = 'https://api.thecatapi.com/v1/';
 
 const refs = getRefs();
 refs.select.style.width = '40%';
@@ -21,15 +19,31 @@ let distResource = 'breeds';
 let url = URL + distResource;
 
 fetchBreeds(url)
-  .then(addDataSelect)
+  .then(addDataSelectBreeds)
   .catch(error => console.log(error));
 
-function addDataSelect(arrBreeds) {
+function addDataSelectBreeds(arrBreeds) {
   if (arrBreeds.length === 0) {
     return;
   }
-  const dataSelect = arrBreeds.map(breed => {
-    return { text: breed.name, value: breed.id };
+  const dataSelectBreeds = arrBreeds.map(({ name, id }) => {
+    return { text: name, value: id };
   });
-  slimSelect.setData(dataSelect);
+  const firstOption = [
+    {
+      text: '',
+      placeholder: true,
+    },
+  ];
+  const allOptions = [...firstOption, ...dataSelectBreeds];
+  slimSelect.setData(allOptions);
+}
+
+refs.select.addEventListener('change', onSelectBreed);
+
+function onSelectBreed(e) {
+  if (e.target.value === '') {
+    return;
+  }
+  console.log('chahge breed: ', e.target.value);
 }
