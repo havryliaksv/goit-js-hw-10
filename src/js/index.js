@@ -65,7 +65,7 @@ function onSelectBreed(e) {
   isVisually([refs.loader]);
   fetchCatByBreed(url, options)
     .then(addMarkupInfo)
-    .catch(error => console.log(error));
+    .catch(error => console.log('error', error));
 }
 
 function addMarkupInfo(infoArr) {
