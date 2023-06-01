@@ -1,4 +1,8 @@
-@import url('./reset.css');
+@import url('reset.css');
+
+body {
+  padding: 16px;
+}
 
 .loader {
   font-size: 20px;
@@ -23,11 +27,14 @@
   bottom: -7px;
   background: linear-gradient(#5897fb 100%, transparent 0) no-repeat;
   background-size: 0% auto;
-  animation: 10s lineGrow linear infinite;
+  animation: 10s lineGrow linear infinite backwards;
 }
 
 @keyframes lineGrow {
-  to {
+  0% {
+    background-size: 0% auto;
+  }
+  100% {
     background-size: 100% auto;
   }
 }
@@ -51,4 +58,16 @@
 }
 .error {
   color: red;
+}
+.cat-info {
+  display: flex;
+  column-gap: 20;
+  margin-top: 20px;
+}
+.ihfo-title {
+  max-width: 400px;
+}
+.info-description {
+  max-width: 400px;
+  margin-top: 24px;
 }

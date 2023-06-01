@@ -6,7 +6,7 @@ import { URL, options, fetchBreeds, fetchCatByBreed } from './cat-api';
 import 'slim-select/dist/slimselect.css';
 
 const refs = getRefs();
-refs.select.style.width = '40%';
+refs.select.style.maxWidth = '360px';
 isHidden([refs.select, refs.error, refs.info]);
 isVisually([refs.loader]);
 
@@ -21,17 +21,10 @@ const slimSelect = new SlimSelect({
 let distResource = 'breeds';
 let url = URL + distResource;
 
-fetchBreeds(url)
-  .then(addDataSelectBreeds)
-  .catch(error => {
-    isHidden([refs.info, refs.loader, refs.select]);
-    isVisually([refs.error]);
-    Notify.failure(refs.error.textContent);
-    console.error('Error status: ', error);
-  });
+fetchBreeds(url).then(addDataSelectBreeds).catch(isError);
 
 function addDataSelectBreeds(arrBreeds) {
-  if (!arrBreeds) {
+  if (!arrBreeds || arrBreeds.length === 0) {
     isHidden([refs.loader]);
     isVisually([refs.error]);
     Notify.failure(refs.error.textContent);
@@ -63,13 +56,11 @@ function onSelectBreed(e) {
   url = URL + distResource;
   isHidden([refs.info]);
   isVisually([refs.loader]);
-  fetchCatByBreed(url, options)
-    .then(addMarkupInfo)
-    .catch(error => console.log('error', error));
+  fetchCatByBreed(url, options).then(addMarkupInfo).catch(isError);
 }
 
 function addMarkupInfo(infoArr) {
-  if (!infoArr) {
+  if (!infoArr || infoArr.length === 0) {
     isHidden([refs.loader, refs.info]);
     isVisually([refs.error]);
     Notify.failure(refs.error.textContent);
@@ -109,4 +100,11 @@ function isHidden(elArr) {
       el.classList.add('visually-hidden');
     }
   });
+}
+
+function isError(error) {
+  isHidden([refs.info, refs.loader, refs.select]);
+  isVisually([refs.error]);
+  Notify.failure(refs.error.textContent);
+  console.error('Error status: ', error);
 }
