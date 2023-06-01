@@ -3,7 +3,7 @@ import SlimSelect from 'slim-select';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { URL, options, fetchBreeds, fetchCatByBreed } from './cat-api';
 
-import 'slim-select/dist/slimselect.css';
+// import 'slim-select/dist/slimselect.css';
 
 const refs = getRefs();
 refs.select.style.width = '40%';
