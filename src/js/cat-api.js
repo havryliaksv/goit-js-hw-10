@@ -24,4 +24,4 @@ function fetchCatByBreed(url) {
     return response.json();
   });
 }
-export { URL, fetchBreeds, fetchCatByBreed };
+export { URL, options, fetchBreeds, fetchCatByBreed };
