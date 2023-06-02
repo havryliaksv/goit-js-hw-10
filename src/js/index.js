@@ -1,7 +1,7 @@
 import getRefs from './get-refs';
 import SlimSelect from 'slim-select';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import { URL, options, fetchBreeds, fetchCatByBreed } from './cat-api';
+import { URL, fetchBreeds, fetchCatByBreed } from './cat-api';
 
 import 'slim-select/dist/slimselect.css';
 
@@ -15,6 +15,7 @@ const slimSelect = new SlimSelect({
   settings: {
     placeholderText: 'Choose the breed of the cat',
     allowDeselect: true,
+    maxSelected: 1,
   },
 });
 
@@ -52,50 +53,53 @@ function onSelectBreed(e) {
   if (e.target.value === '') {
     return;
   }
-  distResource = `images/search?breed_ids=${e.target.value}`;
+  distResource = `images/search?breed_ids=${e.target.value}&limit=3&size=full`;
   url = URL + distResource;
   isHidden([refs.info]);
   isVisually([refs.loader]);
-  fetchCatByBreed(url, options).then(addMarkupInfo).catch(isError);
+  fetchCatByBreed(url).then(addMarkupInfo).catch(isError);
 }
 
-function addMarkupInfo(infoArr) {
-  if (!infoArr || infoArr.length === 0) {
+function addMarkupInfo(arrInfo) {
+  if (!arrInfo || arrInfo.length === 0) {
     isHidden([refs.loader, refs.info]);
     isVisually([refs.error]);
     Notify.failure(refs.error.textContent);
     return;
   }
-  const markUp = infoArr
-    .map(
-      el =>
-        `<img
-            src="${el.url}"
-            alt="${el.breeds[0].alt_names || el.breeds[0].name || 'cat image'}"
-            width="360"
-            height="360"
-          />
-          <div class="info">
-            <h1 class="ihfo-title">${el.breeds[0].name}</h1>
-            <p class="info-description">${el.breeds[0].description}</p>
-          </div>`
-    )
-    .join('');
+  const markUp =
+    arrInfo
+      .map(
+        ({ url, breeds }) =>
+          `<img
+             src="${url}"
+             alt="${breeds[0].alt_names || breeds[0].name || 'cat image'}"
+             width="300"
+             height="300"
+          />`
+      )
+      .join('') +
+    `<div class="info">
+            <h1 class="ihfo-title">${arrInfo[0].breeds[0].name}</h1>
+            <p class="info-description">${arrInfo[0].breeds[0].description}</p>
+            <p class="info-description">Country of Origin: ${arrInfo[0].breeds[0].origin}</p>
+            <p class="info-description">Temperament: ${arrInfo[0].breeds[0].temperament}</p>
+     </div>`;
   refs.info.innerHTML = markUp;
   isHidden([refs.loader]);
   isVisually([refs.info]);
 }
 
-function isVisually(elArr) {
-  elArr.forEach(el => {
+function isVisually(arrEl) {
+  arrEl.forEach(el => {
     if (el.classList.contains('visually-hidden')) {
       el.classList.remove('visually-hidden');
     }
   });
 }
 
-function isHidden(elArr) {
-  elArr.forEach(el => {
+function isHidden(arrEl) {
+  arrEl.forEach(el => {
     if (!el.classList.contains('visually-hidden')) {
       el.classList.add('visually-hidden');
     }
