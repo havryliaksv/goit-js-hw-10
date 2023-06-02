@@ -53,8 +53,13 @@ function onSelectBreed(e) {
   if (e.target.value === '') {
     return;
   }
-  distResource = `images/search?breed_ids=${e.target.value}&limit=3&size=full`;
-  url = URL + distResource;
+  distResource = 'images/search?';
+  const searchParams = new URLSearchParams({
+    breed_ids: e.target.value,
+    limit: 3,
+    size: 'small',
+  });
+  url = URL + distResource + searchParams;
   isHidden([refs.info]);
   isVisually([refs.loader]);
   fetchCatByBreed(url).then(addMarkupInfo).catch(isError);
